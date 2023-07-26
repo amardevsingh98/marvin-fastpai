@@ -1,0 +1,8 @@
+# Ignore Python virtual environment directories
+venv/
+
+# Ignore any compiled Python bytecode
+*.pyc
+
+# Ignore local development settings
+.env
