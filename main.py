@@ -57,17 +57,24 @@ def create_reply_chat(body: Dict) -> str:
     Given chat history in `body.chat_data.message_list`, context in `body.readable_context_data`, supported by raw context data in `body.context_data`, create reply representing @wisatajawa helpdesk team.
     """
 
+
+@marvin.ai_model
+class EmailDraft(BaseModel):
+    subject: str;
+    body: str;
+    
 @marvin.ai_fn
-def create_email_draft(body: Dict) -> str:
+def create_email_draft(body: Dict) -> EmailDraft:
     # Prompt still resulting bad result
     """
-        We are a helpdesk team of travel company, we need to make `body.context` request to the hotel by an email.
-        Please create an email draft with the following data
-        from=helpdesk@wisatajawa
-        to=support@ascott.hotel
-        booker_name=`body.context_data.owner_data.name`
-        reason=`body.reason`
-        booking_data=`body.context_data`
+    We are a helpdesk team of travel company, we need to make `body.email_subject` request to the hotel by an email.
+    Please create an email draft with proper subject and compact understandable body. Use HTML format for the body.
+    Here's the data regarding the email and the request:
+    from=helpdesk@wisatajawa
+    to=support@ascott.hotel
+    booker_name=`body.context_data.owner_data.name`
+    `body.email_body_type`=`body.email_body_text`
+    booking_data=`body.readable_context_data`
     """
 
 @app.post('/question')
@@ -102,11 +109,11 @@ async def reply_chat(request: Request) -> str:
 
     
 @app.post('/email')
-async def email_draft(request: Request) -> str:
+async def email_draft(request: Request):
     try:
         body = await request.json()
         result = create_email_draft(body=body)
-        return result
+        return result.json()
     except Exception as e:
         raise HTTPException(status_code=500, detail={ 'detail': str(e) })
     
