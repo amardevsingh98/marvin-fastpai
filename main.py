@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 
+from pydantic import BaseModel
 from typing import Dict
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -41,7 +42,7 @@ app.add_middleware(
 @marvin.ai_fn
 def create_response_user_question(body: Dict) -> str:
     """
-    Given `body.context_data`, create response to the question in `body.question`.
+    Given `body.readable_context_data`, and supported by raw context data in `body.context_data`, create response to the question in `body.question`.
     """
 
 @marvin.ai_fn
@@ -53,7 +54,7 @@ def summarize_conversation(body: Dict) -> str:
 @marvin.ai_fn
 def create_reply_chat(body: Dict) -> str:
     """
-    Given chat history in `body.chat_data.message_list` and booking data `body.context_data`, create reply representing @wisatajawa helpdesk team.
+    Given chat history in `body.chat_data.message_list`, context in `body.readable_context_data`, supported by raw context data in `body.context_data`, create reply representing @wisatajawa helpdesk team.
     """
 
 @marvin.ai_fn
